@@ -60,9 +60,10 @@ fun ItemTask(
 
             taskNotificationService.showBasicNotification(task.name)
         }
-        if (isReset) {
-            remainingTime = totalSeconds
-        }
+    }
+    if (isReset) {
+
+        remainingTime = totalSeconds
     }
 
     //Create a snapshotFlow that observes changes in the remainingTime.

@@ -40,16 +40,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SideEffectHandlersTheme {
-                val postNotificationPermission =
-                    rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
 
                 val taskNotificationService = TaskNotificationService(applicationContext)
-
-                LaunchedEffect(Unit) {
-                    if (!postNotificationPermission.status.isGranted) {
-                        postNotificationPermission.launchPermissionRequest()
-                    }
-                }
 
                 Scaffold(topBar = {
                     TopAppBar(
