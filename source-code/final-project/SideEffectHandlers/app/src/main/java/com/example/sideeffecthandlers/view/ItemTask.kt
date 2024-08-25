@@ -70,7 +70,7 @@ fun ItemTask(
     val remainingTimeFlow = snapshotFlow { remainingTime }
 
     //We can use snapshotFlow to observe the timer’s state and react whenever it updates.
-    LaunchedEffect(remainingTimeFlow) {
+    LaunchedEffect(Unit) {
         remainingTimeFlow.collect { time ->
             Log.d(
                 "TaskTimerApp",
