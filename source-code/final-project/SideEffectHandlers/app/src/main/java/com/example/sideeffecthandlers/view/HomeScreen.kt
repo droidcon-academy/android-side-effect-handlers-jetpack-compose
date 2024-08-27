@@ -37,17 +37,12 @@ fun HomeScreen(
     taskViewModel: TaskViewModel,
     taskNotificationService: TaskNotificationService,
 ) {
-
     val tasks = taskViewModel.tasks.collectAsState()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
     var showBottomSheet by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
-    BackHandler(sheetState.isVisible) {
-        showBottomSheet = false
-    }
 
     taskViewModel.getTasks()
 
@@ -61,6 +56,10 @@ fun HomeScreen(
                 showBottomSheet = false
             }
         }
+    }
+
+    BackHandler(sheetState.isVisible) {
+        hideBottomSheet()
     }
 
     if (showBottomSheet) {

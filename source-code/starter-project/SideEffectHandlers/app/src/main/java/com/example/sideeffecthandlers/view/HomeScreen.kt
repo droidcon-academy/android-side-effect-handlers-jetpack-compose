@@ -38,8 +38,6 @@ fun HomeScreen(
     taskViewModel: TaskViewModel,
     taskNotificationService: TaskNotificationService,
 ) {
-
-
     val tasks = taskViewModel.tasks.collectAsState()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
@@ -54,6 +52,10 @@ fun HomeScreen(
 
     fun hideBottomSheet() {
         showBottomSheet = false
+    }
+
+    BackHandler(sheetState.isVisible) {
+        hideBottomSheet()
     }
 
     if (showBottomSheet) {
