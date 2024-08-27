@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
@@ -31,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,28 +38,25 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.example.sideeffecthandlers.R
 import com.example.sideeffecthandlers.model.Task
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BottomSheet(
-    sheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope,
-    lifecycleOwner: LifecycleOwner,
+    onDismissClicked: () -> Unit,
     onCreateClick: (Task) -> Unit,
 ) {
-
     var pickerValues by remember { mutableStateOf(Triple(0, 0, 0)) }
     var taskName by remember { mutableStateOf("") }
     var isErrorInName by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     // Derive a state from other states. It's useful when you want to combine or compute a state based on existing ones.
     val isErrorInDuration by remember {
@@ -68,13 +65,13 @@ fun BottomSheet(
         }
     }
 
-    DisposableEffect(lifecycleOwner) {
-        Log.d("TaskTimerApp", "BottomSheet Created")
-
-        val lifecycleObserver = object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-            fun onDestroy() {
-                Log.d("TaskTimerApp", "BottomSheet Destroyed")
+    DisposableEffect(Unit) {
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_CREATE -> {
+                    Log.d("TaskTimerApp", "DisposableEffect ON_CREATE Called")
+                }
+                else -> {}
             }
         }
 
@@ -110,12 +107,9 @@ fun BottomSheet(
             )
             IconButton(
                 onClick = {
-                    coroutineScope.launch {
-                        sheetState.hide()
-                    }
-
                     resetBottomSheetValues()
                     isErrorInName = false
+                    onDismissClicked()
                 },
 
                 ) {

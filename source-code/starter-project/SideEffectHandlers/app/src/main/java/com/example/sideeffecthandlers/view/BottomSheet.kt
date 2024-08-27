@@ -51,9 +51,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BottomSheet(
+    onDismissClicked: () -> Unit,
     onCreateClick: (Task) -> Unit,
 ) {
-
     var pickerValues by remember { mutableStateOf(Triple(0, 0, 0)) }
     var taskName by remember { mutableStateOf("") }
     var isErrorInName by remember { mutableStateOf(false) }
@@ -82,9 +82,9 @@ fun BottomSheet(
             )
             IconButton(
                 onClick = {
-
                     resetBottomSheetValues()
                     isErrorInName = false
+                    onDismissClicked()
                 },
 
                 ) {
