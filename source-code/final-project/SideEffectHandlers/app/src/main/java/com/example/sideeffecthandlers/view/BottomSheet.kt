@@ -65,7 +65,7 @@ fun BottomSheet(
         }
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(lifecycleOwner) {
         val lifecycleObserver = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_CREATE -> {
