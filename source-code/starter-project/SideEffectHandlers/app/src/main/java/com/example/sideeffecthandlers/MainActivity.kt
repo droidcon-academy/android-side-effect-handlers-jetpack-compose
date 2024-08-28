@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                         if (showSplashScreen) {
                             SplashScreen(onTimeout = { showSplashScreen = false })
                         } else {
-                            HomeScreen(taskViewModel, taskNotificationService, this@MainActivity)
+                            HomeScreen(taskViewModel,taskNotificationService)
                         }
                     }
                 }
