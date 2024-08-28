@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.sideeffecthandlers'
+    namespace 'com.droidcon.tasktimer'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.sideeffecthandlers"
+        applicationId "com.droidcon.tasktimer"
         minSdk 24
         targetSdk 34
         versionCode 1
