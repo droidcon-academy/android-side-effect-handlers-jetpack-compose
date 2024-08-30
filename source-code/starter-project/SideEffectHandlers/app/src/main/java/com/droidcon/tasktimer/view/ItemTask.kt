@@ -41,6 +41,7 @@ fun ItemTask(
         (task.durationHours * 3600 + task.durationMinutes * 60 + task.durationSeconds).toLong()
 
     var isRunning by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) }
     var isReset by remember { mutableStateOf(false) }
 
     var remainingTime by remember { mutableStateOf(totalSeconds) }
