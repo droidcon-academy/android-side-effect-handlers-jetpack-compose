@@ -96,7 +96,6 @@ fun ItemTask(
         }
     }
     if (isReset) {
-
         remainingTime = totalSeconds
     }
 

@@ -46,6 +46,9 @@ fun ItemTask(
 
     var remainingTime by remember { mutableStateOf(totalSeconds) }
 
+    if (isReset) {
+        remainingTime = totalSeconds
+    }
 
     Card(
         modifier = Modifier
