@@ -17,7 +17,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,10 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.droidcon.tasktimer.R
 import com.droidcon.tasktimer.notification.TaskNotificationService
 import com.droidcon.tasktimer.model.Task
@@ -45,9 +50,38 @@ fun ItemTask(
         (task.durationHours * 3600 + task.durationMinutes * 60 + task.durationSeconds).toLong()
 
     var isRunning by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) }
     var isReset by remember { mutableStateOf(false) }
 
     var remainingTime by remember { mutableStateOf(totalSeconds) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val lifecycleObserver = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> {
+                    if (isPaused) {
+                        isRunning = true
+                        isPaused = false
+                    }
+                }
+                Lifecycle.Event.ON_PAUSE -> {
+                    if (isRunning) {
+                        isRunning = false
+                        isPaused = true
+                    }
+                }
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+
+        onDispose {
+            Log.d("TaskTimerApp", "DisposableEffect Disposed")
+            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+        }
+    }
 
     // Use LaunchedEffect to perform side effects whenever a particular condition is met, such as starting or stopping a timer.
     LaunchedEffect(isRunning) {
