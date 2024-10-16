@@ -59,25 +59,6 @@ fun BottomSheet(
         }
     }
 
-    DisposableEffect(lifecycleOwner) {
-        val lifecycleObserver = LifecycleEventObserver { _, event ->
-            when (event) {
-                Lifecycle.Event.ON_CREATE -> {
-                    Log.d("TaskTimerApp", "DisposableEffect ON_CREATE Called")
-                }
-                else -> {}
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(lifecycleObserver)
-
-        onDispose {
-            Log.d("TaskTimerApp", "DisposableEffect Disposed")
-            lifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
-        }
-    }
-
-
     fun resetBottomSheetValues() {
         taskName = ""
         pickerValues = Triple(0, 0, 0)
